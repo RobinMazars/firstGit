@@ -1,0 +1,11 @@
+canvas {
+  display: block;
+  border: 1px solid #000000;
+}
+#text {
+  border: 1px solid #000000;
+  flex: 1;
+}
+#container {
+  display: flex;
+}
