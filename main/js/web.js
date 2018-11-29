@@ -10,8 +10,8 @@ class Gare {
   }
   drawName() {
     ctx.font = '10px Arial';
-    ctx.fillStyle="blue"
-    ctx.fillText("("+this._id+")", this._x, this._y - 10);
+    ctx.fillStyle = "blue"
+    ctx.fillText("(" + this._id + ")", this._x, this._y - 10);
   }
   changeColor(color) {
     this._color = color;
@@ -72,6 +72,7 @@ class Gare {
     }
   }
 }
+
 function drawAllPoint(number) {
   var radius = 5;
   colorDefault = 'black'
@@ -83,6 +84,7 @@ function drawAllPoint(number) {
   }
   //console.log(gareListe);
 }
+
 function compare(a, b) {
   if (a.distance < b.distance)
     return -1;
