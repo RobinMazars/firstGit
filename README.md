@@ -1,4 +1,5 @@
 # firstGit
 
 
-first try on github test 
+first try on github .
+testing  all feature.
