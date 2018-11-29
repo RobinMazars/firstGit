@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="utf-8">
+  <title>Tchou Tchou Tchou</title>
+  <link rel="stylesheet" href="css/master.css">
+</head>
+
+<body>
+  <h1>Tchou Tchou Tchou</h1>
+  <canvas id="canvas" width="600" height="600"></canvas>
+
+
+  <script type="text/javascript">
+    var canvas = document.getElementById("canvas");
+    var ctx = canvas.getContext("2d");
+
+    function drawPoint(x, y, radius, color) {
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.arc(x, y, radius, 0, 2 * Math.PI);
+      ctx.fill();
+
+    }
+
+    function distance2Point(x1, y1, x2, y2) {
+      return Math.sqrt((y2 - y1) ** 2 + (x2 - x1) ** 2)
+    }
+
+    function randomIntFromInterval(min, max) // min and max included
+    {
+      return Math.floor(Math.random() * (max - min + 1) + min);
+    }
+    class Gare {
+      constructor(x, y, radius, color, deserve = false) {
+        this._x = x;
+        this._y = y;
+        this._radius = radius;
+        this._color = color;
+        this._deserve = deserve;
+        this.draw()
+      }
+      changeColor(color){
+        this._color = color;
+        drawPoint(this._x, this._y, this._radius, this._color)
+      }
+      draw() {
+        drawPoint(this._x, this._y, this._radius, this._color)
+      }
+      findProxy() {
+        var proxy = null;
+        var proxyDist = null;
+        for (var i = 0; i < gareListe.length; i++) {
+          var dist = distance2Point(this._x, this._y, gareListe[i]._x, gareListe[i]._y)
+          if ((proxy == null || proxyDist > dist) && gareListe[i]._deserve == false) {
+            console.log(proxy);
+            proxy = gareListe[i];
+            proxyDist = dist
+
+          }
+        }
+        console.log(proxy);
+        if (proxy == null) {
+          return false
+        } else {
+          return proxy;
+        }
+
+      }
+      drawLineProxy(proxy) {
+        drawLine(this._x, this._y, proxy._x, proxy._y)
+      }
+      drawWeb() {
+        this._deserve=true
+        var proxy = this.findProxy();
+        proxy._deserve = true
+
+        if (proxy) {
+          this.drawLineProxy(proxy)
+          proxy.drawWeb()
+
+        }
+      }
+    }
+
+    function drawAllPoint(number) {
+      var radius = 5;
+      colorDefault = "black"
+      for (var i = 0; i < number; i++) {
+        x = randomIntFromInterval(radius, canvas.width - radius)
+        y = randomIntFromInterval(radius, canvas.height - radius)
+        var g = new Gare(x, y, radius, colorDefault)
+        gareListe.push(g);
+      }
+      console.log(gareListe);
+    }
+
+    function drawLine(x1, y1, x2, y2) {
+      ctx.strokeStyle = "red";
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2, y2);
+      ctx.stroke();
+    }
+    var gare1 = new Gare(canvas.width / 2, canvas.height / 2, 5, "blue", true)
+    var gareListe = [];
+    drawAllPoint(10)
+    var randGare=gareListe[randomIntFromInterval(0,gareListe.length-1)]
+    randGare.changeColor("green");
+    randGare.drawWeb();
+  </script>
+
+</body>
+
+</html>

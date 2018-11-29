@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang='fr'>
+
+<head>
+  <meta charset='utf-8'>
+  <title>Tchou Tchou Tchou</title>
+  <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+  <link rel='stylesheet' href='css/master.css'>
+</head>
+
+<body>
+  <h1>Tchou Tchou Tchou§§</h1>
+  <a href='https://www.youtube.com/watch?v=P945A5Tndp8'>Music (baissez le son !!!)</a>
+  <div id="container">
+    <canvas id='canvas' width='600' height='600'></canvas>
+    <div id="text">
+      <h2>Detail:</h2>
+      <p>Longueur du réseau : <span id="longueur"></span> </p>
+      <p>Click pour ajouter une gare</p>
+
+    </div>
+
+  </div>
+  <script src='js/util.js' charset='utf-8'></script>
+  <script src="js/web.js" charset="utf-8"></script>
+  <script type='text/javascript'>
+    ////////////////init
+    var canvas = document.getElementById('canvas');
+    var ctx = canvas.getContext('2d');
+    /////////////////////////////////////
+    function webV4() { //best marche tout le temps
+      gareListe[0].findShort()
+      var g1 = distListe[0].gare1
+      var g2 = distListe[0].gare2
+      var group = []
+      group.push(g1)
+      group.push(g2)
+      longueur += distance2Point(g1._x, g1._y, g2._x, g2._y)
+      drawLine(g1._x, g1._y, g2._x, g2._y, 'green')
+      for (var i = 0; i < gareListe.length - 2; i++) {
+        distListe = []
+        for (var j = 0; j < group.length; j++) {
+          distListe.push(group[j].findProxyDistOut(group))
+        }
+        distListe.sort(compare)
+        var g1 = distListe[0].gare1
+        var g2 = distListe[0].gare2
+        group.push(g2)
+        longueur += distance2Point(g1._x, g1._y, g2._x, g2._y)
+        drawLine(g1._x, g1._y, g2._x, g2._y, 'green')
+      }
+    }
+    /////////////Start programme////////////
+    var gareListe = [];
+    var distListe = [];
+    var longueur = 0;
+    var grbGare = [
+      [0]
+    ]
+    nbrPoint=20;
+    drawAllPoint(nbrPoint)
+    var indexpoint=nbrPoint;
+    webV4()
+    $("#longueur").html(Math.floor(longueur))
+    $("#canvas").click(function(event) {
+      var pos = mousePos(event, this)
+      var g = new Gare(indexpoint, pos._x, pos._y, 5,"yellow")
+      gareListe.push(g)
+      var prox=g.findProxyDist()
+      //console.log(prox);
+      drawLine(g._x,g._y,prox.gare2._x,prox.gare2._y)
+      indexpoint++;
+    })
+    //////////////////////////////////////////////////////
+  </script>
+
+</body>
+
+</html>

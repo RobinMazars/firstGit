@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="utf-8">
+  <title>Tchou Tchou Tchou</title>
+  <link rel="stylesheet" href="css/master.css">
+</head>
+
+<body>
+  <h1>Tchou Tchou Tchou</h1>
+  <a target="_tab" rel="noopener noreferrer" href="https://www.youtube.com/watch?v=P945A5Tndp8">Music (baissez le son !!!)</a>
+  <canvas id="canvas" width="600" height="600"></canvas>
+
+  <script src="js/util.js" charset="utf-8"></script>
+  <script type="text/javascript">
+    var canvas = document.getElementById("canvas");
+    var ctx = canvas.getContext("2d");
+    class Gare {
+      constructor(x, y, radius, color, deserve = false) {
+        this._x = x;
+        this._y = y;
+        this._radius = radius;
+        this._color = color;
+        this._deserve = deserve;
+        this.draw()
+      }
+      changeColor(color) {
+        this._color = color;
+        drawPoint(this._x, this._y, this._radius, this._color)
+      }
+      draw() {
+        drawPoint(this._x, this._y, this._radius, this._color)
+      }
+      findProxy() {
+        var proxy = null;
+        var proxyDist = null;
+        for (var i = 0; i < gareListe.length; i++) {
+          var dist = distance2Point(this._x, this._y, gareListe[i]._x, gareListe[i]._y)
+          if ((proxy == null || proxyDist > dist) && gareListe[i]._deserve == false) {
+            //console.log(proxy);
+            proxy = gareListe[i];
+            proxyDist = dist
+          }
+        }
+        if (proxy == null) {
+          return false
+        } else {
+          return proxy;
+        }
+      }
+      drawLineProxy(proxy) {
+        drawLine(this._x, this._y, proxy._x, proxy._y)
+      }
+      drawWeb() {
+        this._deserve = true
+        var proxy = this.findProxy();
+        proxy._deserve = true
+        if (proxy) {
+          this.drawLineProxy(proxy)
+          proxy.drawWeb()
+        }
+      }
+      findProxyDist() {
+        var proxy = null;
+        var proxyDist = {};
+
+        for (var i = 0; i < gareListe.length; i++) {
+          var dist = distance2Point(this._x, this._y, gareListe[i]._x, gareListe[i]._y)
+          if ((proxy == null || proxyDist.distance > dist) && gareListe[i] != this&&gareListe[i]._deserve!=true) {
+            proxy = gareListe[i];
+            proxyDist = {
+              distance: dist,
+              gare1: this,
+              gare2: proxy
+            };
+          }
+        }
+        if (proxy == null) {
+          return false
+        } else {
+          return proxyDist;
+        }
+      }
+      findShort() {
+        for (var i = 0; i < gareListe.length; i++) {
+          var proxyDist = gareListe[i].findProxyDist()
+          distListe.push(proxyDist)
+        }
+      }
+    }
+
+    function drawAllPoint(number) {
+      var radius = 5;
+      colorDefault = "black"
+      for (var i = 0; i < number; i++) {
+        x = randomIntFromInterval(radius, canvas.width - radius)
+        y = randomIntFromInterval(radius, canvas.height - radius)
+        var g = new Gare(x, y, radius, colorDefault)
+        gareListe.push(g);
+      }
+      //console.log(gareListe);
+    }
+
+    function compare(a, b) {
+      if (a.distance < b.distance)
+        return -1;
+      if (a.distance > b.distance)
+        return 1;
+      return 0;
+    }
+
+    function webV1() { //selectionne une gare au hasard,la colorie en vert,est trace le plus proche etc...
+      var randGare = gareListe[randomIntFromInterval(0, gareListe.length - 1)]
+      randGare.changeColor("green");
+      randGare.drawWeb();
+
+    }
+
+    function webV2() {
+      for (var i = 0; i < 9; i++) {
+        distListe = [];
+        var short = gareListe[0].findShort()
+        distListe.sort(compare);
+        console.log(distListe);
+        var g1=distListe[0].gare1
+        var g2=distListe[0].gare2
+        drawLine(g1._x, g1._y, g2._x, g2._y)
+        g1._deserve=true;
+        g2._deserve=true;
+      }
+    }
+    /////////////Start programme////////////
+    var gareListe = [];
+    var distListe = [];
+    drawAllPoint(10)
+    webV2()
+  </script>
+
+</body>
+
+</html>

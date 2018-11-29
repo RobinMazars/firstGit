@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang='fr'>
+
+<head>
+  <meta charset='utf-8'>
+  <title>Tchou Tchou Tchou</title>
+  <link rel='stylesheet' href='css/master.css'>
+</head>
+
+<body>
+  <h1>Tchou Tchou Tchou</h1>
+  <a target='_tab' rel='noopener noreferrer' href='https://www.youtube.com/watch?v=P945A5Tndp8'>Music (baissez le son !!!)</a>
+  <canvas id='canvas' width='600' height='600'></canvas>
+
+  <script src='js/util.js' charset='utf-8'></script>
+  <script type='text/javascript'>
+    var canvas = document.getElementById('canvas');
+    var ctx = canvas.getContext('2d');
+    class Gare {
+      constructor(id, x, y, radius, color, deserve = false) {
+        this._id = id;
+        this._x = x;
+        this._y = y;
+        this._radius = radius;
+        this._color = color;
+        this._deserve = deserve;
+        this.draw()
+      }
+      drawName() {
+        ctx.font = '10px Arial';
+        ctx.fillText(this._id, this._x, this._y - 10);
+      }
+      changeColor(color) {
+        this._color = color;
+        drawPoint(this._x, this._y, this._radius, this._color)
+      }
+      draw() {
+        drawPoint(this._x, this._y, this._radius, this._color)
+        this.drawName()
+      }
+      findProxyDistOut(grp) {
+        var proxy = null;
+        var proxyDist = {};
+        for (var i = 0; i < gareListe.length; i++) {
+          // var actuelI=gareListe[i]
+          // var act=this
+          var dist = distance2Point(this._x, this._y, gareListe[i]._x, gareListe[i]._y)
+          if ((proxy == null || proxyDist.distance > dist) && gareListe[i] != this && !grp.includes(gareListe[i])) {
+            proxy = gareListe[i];
+            proxyDist = {
+              distance: dist,
+              gare1: this,
+              gare2: proxy
+            };
+          }
+        }
+        if (proxy == null) {
+          return false
+        } else {
+          return proxyDist;
+        }
+      }
+      findProxy() {
+        var proxy = null;
+        var proxyDist = null;
+        for (var i = 0; i < gareListe.length; i++) {
+          var dist = distance2Point(this._x, this._y, gareListe[i]._x, gareListe[i]._y)
+          if ((proxy == null || proxyDist > dist) && gareListe[i]._deserve == false) {
+            //console.log(proxy);
+            proxy = gareListe[i];
+            proxyDist = dist
+          }
+        }
+        if (proxy == null) {
+          return false
+        } else {
+          return proxy;
+        }
+      }
+      drawLineProxy(proxy) {
+        drawLine(this._x, this._y, proxy._x, proxy._y, 'red')
+      }
+      drawWeb() {
+        this._deserve = true
+        var proxy = this.findProxy();
+
+        if (proxy) {
+          proxy._deserve = true
+          this.drawLineProxy(proxy)
+          proxy.drawWeb()
+        }
+      }
+      findProxyDist() {
+        var proxy = null;
+        var proxyDist = {};
+        for (var i = 0; i < gareListe.length; i++) {
+          // var actuelI=gareListe[i]
+          // var act=this
+          var dist = distance2Point(this._x, this._y, gareListe[i]._x, gareListe[i]._y)
+          if ((proxy == null || proxyDist.distance > dist) && gareListe[i] != this && gareListe[i]._deserve != true) {
+            proxy = gareListe[i];
+            proxyDist = {
+              distance: dist,
+              gare1: this,
+              gare2: proxy
+            };
+          }
+        }
+        if (proxy == null) {
+          return false
+        } else {
+          return proxyDist;
+        }
+      }
+      findShort() {
+        for (var i = 0; i < gareListe.length; i++) {
+          var proxyDist = gareListe[i].findProxyDist()
+          distListe.push(proxyDist)
+        }
+      }
+    }
+
+    function drawAllPoint(number) {
+      var radius = 5;
+      colorDefault = 'black'
+      for (var i = 0; i < number; i++) {
+        x = randomIntFromInterval(radius, canvas.width - radius)
+        y = randomIntFromInterval(radius, canvas.height - radius)
+        var g = new Gare(i, x, y, radius, colorDefault)
+        gareListe.push(g);
+      }
+      //console.log(gareListe);
+    }
+
+    function compare(a, b) {
+      if (a.distance < b.distance)
+        return -1;
+      if (a.distance > b.distance)
+        return 1;
+      return 0;
+    }
+
+    function webV1() { //selectionne une gare au hasard,la colorie en vert,est trace le plus proche etc...
+      var randGare = gareListe[randomIntFromInterval(0, gareListe.length - 1)]
+      randGare.changeColor('green');
+      randGare.drawWeb();
+    }
+
+    function webV2() {
+      for (var i = 0; i < gareListe.length; i++) {
+        distListe = [];
+        var short = gareListe[0].findShort()
+        distListe.sort(compare);
+        // console.log(distListe);
+        var g1 = distListe[0].gare1
+        var g2 = distListe[0].gare2
+        drawLine(g1._x, g1._y, g2._x, g2._y, 'red')
+        g1._deserve = true;
+        g2._deserve = true;
+      }
+    }
+    function webV3() {
+      drawGrp()
+      while (grbGare.length != 1) {
+        setGrp()
+        var proxyOutListe = []
+        for (var i = 0; i < gareListe.length; i++) {
+          var proxyOut = proxyOutsideGrp(gareListe[i])
+          proxyOutListe.push(proxyOut)
+          var g1 = proxyOut.gare1
+          var g2 = proxyOut.gare2
+          //drawLine(g1._x,g1._y,g2._x,g2._y,'blue')
+        }
+        proxyOutListe.sort(compare);
+        for (var i = 0; i < 1; i++) {
+          var g1 = proxyOutListe[i].gare1
+          var g2 = proxyOutListe[i].gare2
+          drawLine(g1._x, g1._y, g2._x, g2._y, 'blue')
+        }
+        grbGare = fussGrp(g1._grp, g2._grp)
+        console.log(grbGare);
+      }
+    }
+
+    function fussGrp(grp1, grp2) {
+      var grpTemp = []
+      for (var i = 0; i < grbGare.length; i++) {
+        if (i != grp1 && i != grp2) {
+          grpTemp.push(grbGare[i]);
+        }
+      }
+      fussGrpTemp = []
+      for (var i = 0; i < grbGare[grp1].length; i++) {
+        fussGrpTemp.push(grbGare[grp1][i])
+      }
+      for (var i = 0; i < grbGare[grp2].length; i++) {
+        fussGrpTemp.push(grbGare[grp2][i])
+      }
+      grpTemp.push(fussGrpTemp);
+      return grpTemp
+    }
+
+    function setGrp() {
+      for (var i = 0; i < grbGare.length; i++) {
+        for (var j = 0; j < grbGare[i].length; j++) {
+          gareListe[grbGare[i][j]]._grp = i
+        }
+      }
+    }
+
+    function proxyOutsideGrp(gare) {
+      var proxy = null;
+      var proxyDist = {};
+      for (var i = 0; i < gareListe.length; i++) {
+        // var actuelI=gareListe[i]
+        // var act=this
+        var dist = distance2Point(gare._x, gare._y, gareListe[i]._x, gareListe[i]._y)
+        if ((proxy == null || proxyDist.distance > dist) &&
+          gareListe[i]._grp != gare._grp) {
+          proxy = gareListe[i];
+          proxyDist = {
+            distance: dist,
+            gare1: gare,
+            gare2: proxy
+          };
+        }
+      }
+      if (proxy == null) {
+        return false
+      } else {
+        return proxyDist;
+      }
+
+    }
+
+    function buidGrp() {
+      console.log('gare1: ' + g1._id + ' gare2: ' + g2._id);
+      //console.log('grb length: ' + grbGare.length);
+      var find1 = false;
+      var find2 = false;
+      for (var j = 0; j < grbGare.length; j++) {
+        if (grbGare[j].includes(g1._id) && !grbGare[j].includes(g2._id)) {
+          find1 = true
+          console.log('g1 in ' + grbGare[j]);
+          if (!grbGare[j].includes(g2._id)) {
+            console.log('put g2 in [' + grbGare[j] + ']');
+            grbGare[j].push(g2._id)
+          }
+        } else if (grbGare[j].includes(g2._id)) {
+          find2 = true
+          console.log('g2 in ' + grbGare[j]);
+          if (!grbGare[j].includes(g1._id) && !find1) {
+            console.log('put g1 in [' + grbGare[j] + ']');
+            grbGare[j].push(g1._id)
+          }
+        }
+        if (find1 && find2) {
+          console.log('fuss');
+          var temp = grbGare[j]
+          console.log(grbGare[j]);
+          outer_loop:
+            for (var i2 = 0; i2 < grbGare.length; i2++) {
+              console.log('i2:' + i2)
+              for (var k = 0; k < grbGare[i2].length; k++) {
+                console.log('grbGare[i2]');
+                console.log(grbGare[i2]);
+                console.log(grbGare[i2][k] + ' vs ' + g2._id);
+                if (grbGare[i2][k] === g2._id) {
+                  console.log('find');
+                  console.log("i2 :" + i2);
+                  console.log("k :" + k);
+                  if (temp.includes(g1._id)) {
+                    temp.splice(temp.indexOf(g1._id), 1);
+
+                  }
+                  if (temp.includes(g2._id)) {
+                    temp.splice(temp.indexOf(g2._id), 1);
+
+                  }
+                  console.log('temp');
+                  console.log(temp);
+                  grbGare[i2] = grbGare[i2].concat(temp)
+                  console.log(grbGare[i2].join(' '));
+                  console.log('grbGare');
+                  console.log(grbGare.join(' '));
+                  grbGare.pop()
+                  break outer_loop
+                }
+              }
+            }
+        }
+      }
+      if (!find1 && !find2) {
+        grbGare.push([g1._id, g2._id])
+        console.log('new Grp:' + grbGare.length);
+      }
+    }
+
+    function drawAll() {
+      for (var i = 0; i < gareListe.length; i++) {
+        for (var j = 0; j < gareListe.length; j++) {
+          if (gareListe[i] != gareListe[j]) {
+            drawLine(gareListe[i]._x, gareListe[i]._y, gareListe[j]._x, gareListe[j]._y, "green")
+          }
+        }
+      }
+    }
+    function drawGrp() {
+      gareListe[0].findShort()
+      for (var i = 0; i < distListe.length; i++) {
+        g1 = distListe[i].gare1
+        g2 = distListe[i].gare2
+        drawLine(g1._x, g1._y, g2._x, g2._y, 'red')
+        buidGrp()
+      }
+      console.log(grbGare);
+    }
+
+    function webV4() {
+      gareListe[0].findShort()
+      var g1 = distListe[0].gare1
+      var g2 = distListe[0].gare2
+      var group=[]
+      group.push(g1)
+      group.push(g2)
+      console.log(group);
+      drawLine(g1._x, g1._y, g2._x, g2._y, 'green')
+    for (var i = 0; i < gareListe.length-2; i++) {
+      distListe=[]
+      for (var j = 0; j < group.length; j++) {
+        distListe.push(group[j].findProxyDistOut(group))
+      }
+      distListe.sort(compare)
+      var g1 = distListe[0].gare1
+      var g2 = distListe[0].gare2
+      group.push(g2)
+      drawLine(g1._x, g1._y, g2._x, g2._y, 'green')
+    }
+
+
+
+
+
+
+    }
+    /////////////Start programme////////////
+    var gareListe = [];
+    var distListe = [];
+    var grbGare = [
+      [0]
+    ]
+    // console.log(grbGare);
+    drawAllPoint(20)
+    //webV1()
+    //webV2()
+    //webV3()
+    //drawAll()
+    webV4()
+
+  </script>
+
+</body>
+
+</html>

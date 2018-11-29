@@ -1,0 +1,21 @@
+[a,b,c,d,e]
+1:n° 1 swap with n°2 ->[b,a,c,d,e] ->same
+2:n° 1 swap with n°3 ->[c,b,a,d,e]
+3:n° 1 swap with n°4 ->[d,b,c,a,e]
+4:n° 1 swap with n°5 ->[e,b,c,d,a]
+
+5: n° 2 swap with n°3 ->[a,c,b,d,e]
+6:n° 2 swap with n°4 ->[a,d,c,b,e]
+7:n° 2 swap with n°5 ->[a,e,c,d,b]
+
+
+9:n°3 swap with n°4  ->[a,b,d,c,e]
+10:n°3 swap with n°5 ->[a,b,e,d,c]
+
+11:n°4 swap with n°5 ->[a,b,c,e,d]
+
+
+
+get first Math.trunc(index / len-1)
+
+get second  (index mod len-1)+1
