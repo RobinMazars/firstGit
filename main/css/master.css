@@ -9,3 +9,27 @@ canvas {
 #container {
   display: flex;
 }
+.lienExterne {
+  border: 1px solid blue;
+  color: blue;
+}
+header {
+  background-color: #3e7ec1;
+  color: white;
+  position: fixed;
+  width: 100%;
+  height: 20px;
+  margin-bottom: 20px;
+  top: 0;
+}
+header ul {
+  padding: 0;
+  margin: auto ;
+  list-style: none;
+  display: flex;
+  justify-content: space-around;
+}
+header ul a {
+  color: white;
+}
+/*# sourceMappingURL=master.css.map */

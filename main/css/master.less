@@ -1,14 +1,47 @@
-// "out": "master.css"
-@primaryBorder:rgb(0, 0, 0);
-canvas{
+// out: master.css, sourcemap: true
+@primaryBorder: rgb(0, 0, 0);
+
+canvas {
   display: block;
   border: 1px solid @primaryBorder;
 }
-#text{
+
+#text {
   border: 1px solid @primaryBorder;
   flex: 1;
 }
-#container{
-  display: flex;
 
+#container {
+  display: flex;
 }
+
+.lienExterne {
+  border: 1px solid blue;
+  color: blue;
+}
+
+header {
+
+  background-color: rgb(62, 126, 193);
+  color: white;
+  position:fixed;
+  width: 100%;
+  @heightHeader:20px;
+  height: @heightHeader;
+  margin-bottom: @heightHeader;
+  top:0;
+
+  ul {
+
+    padding: 0;
+    margin: auto ;
+
+    list-style: none;
+    display: flex;
+    justify-content: space-around;
+    a {
+      color: white;
+    }
+  }
+}
+/*# sourceMappingURL=master.css.map */

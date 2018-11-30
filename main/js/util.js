@@ -85,13 +85,13 @@ function rFact(num) {
   }
 }
 
-function mousePos(e,object) {
+function mousePos(e, object) {
   var offset = object.getBoundingClientRect();
   var styles = window.getComputedStyle(object);
   var cursorX = e.clientX - offset.left - parseInt(styles.borderLeftWidth);
   var cursorY = e.clientY - offset.top - parseInt(styles.borderTopWidth);
 
-  mouse={}
+  mouse = {}
   mouse._x = cursorX
   mouse._y = cursorY
   return mouse;

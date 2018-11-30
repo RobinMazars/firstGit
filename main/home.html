@@ -1,14 +1,26 @@
 <!DOCTYPE html>
 <html lang='fr'>
+
 <head>
   <meta charset='utf-8'>
   <title>Tchou Tchou Tchou</title>
   <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+
+  <link rel='stylesheet' href='css/normalize.css'>
   <link rel='stylesheet' href='css/master.css'>
 </head>
 <body>
-  <h1>Tchou Tchou Tchou§§!!!!!!!!!!!!</h1>
-  <a href='https://www.youtube.com/watch?v=P945A5Tndp8'>Music (baissez le son !!!)</a>
+  <header>
+    <ul>
+      <li>Home</li>
+      <li><a href="#">V1</a></li>
+      <li><a href="#">V2</a></li>
+      <li><a href="#">V3</a></li>
+      <li><a href="#">V4</a></li>
+    </ul>
+  </header>
+  <h1>Tchou Tchou Tchou!</h1>
+  <a class="lienExterne"href='https://www.youtube.com/watch?v=P945A5Tndp8'>Music (baissez le son !!!)</a>
   <div id="container">
     <canvas id='canvas' width='600' height='600'></canvas>
     <div id="text">
@@ -55,18 +67,18 @@
     var grbGare = [
       [0]
     ]
-    nbrPoint=20;
+    nbrPoint = 20;
     drawAllPoint(nbrPoint)
-    var indexpoint=nbrPoint;
+    var indexpoint = nbrPoint;
     webV4()
     $("#longueur").html(Math.floor(longueur))
     $("#canvas").click(function(event) {
       var pos = mousePos(event, this)
-      var g = new Gare(indexpoint, pos._x, pos._y, 5,"yellow")
+      var g = new Gare(indexpoint, pos._x, pos._y, 5, "yellow")
       gareListe.push(g)
-      var prox=g.findProxyDist()
+      var prox = g.findProxyDist()
       //console.log(prox);
-      drawLine(g._x,g._y,prox.gare2._x,prox.gare2._y)
+      drawLine(g._x, g._y, prox.gare2._x, prox.gare2._y)
       indexpoint++;
     })
     //////////////////////////////////////////////////////
