@@ -32,4 +32,12 @@ header ul {
 header ul a {
   color: white;
 }
+footer {
+  background-color: #3e7ec1;
+  color: white;
+  bottom: 0;
+  position: absolute;
+  padding: 5px;
+  width: auto;
+}
 /*# sourceMappingURL=master.css.map */
