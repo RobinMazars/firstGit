@@ -1,6 +1,6 @@
 // out: master.css, sourcemap: true
 @primaryBorder: rgb(0, 0, 0);
-
+@primaryColor:rgb(62, 126, 193);
 canvas {
   display: block;
   border: 1px solid @primaryBorder;
@@ -22,7 +22,7 @@ canvas {
 
 header {
 
-  background-color: rgb(62, 126, 193);
+  background-color:@primaryColor ;
   color: white;
   position:fixed;
   width: 100%;
@@ -43,5 +43,13 @@ header {
       color: white;
     }
   }
+}
+footer{
+  background-color: @primaryColor;
+  color: white;
+  bottom: 0;
+  position: absolute;
+  padding: 5px;
+  width: auto;
 }
 /*# sourceMappingURL=master.css.map */
